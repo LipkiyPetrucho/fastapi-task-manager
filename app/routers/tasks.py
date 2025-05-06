@@ -25,9 +25,7 @@ async def create_task(
 
 
 @router.put(
-    "/{task_id}",
-    response_model=schemas.TaskOut,
-    summary="Get a single task by its ID"
+    "/{task_id}", response_model=schemas.TaskOut, summary="Get a single task by its ID"
 )
 async def update_task(
     task_id: int,

@@ -11,7 +11,7 @@ from app.core.database import async_session, engine, Base
 
 # ---------- GLOBAL EVENT LOOP (pytest‑asyncio) ----------
 @pytest.fixture(scope="session")
-def event_loop() -> asyncio.AbstractEventLoop:       # ← переопределяем дефолт
+def event_loop() -> asyncio.AbstractEventLoop:  # ← переопределяем дефолт
     loop = asyncio.new_event_loop()
     yield loop
     loop.close()
@@ -19,7 +19,7 @@ def event_loop() -> asyncio.AbstractEventLoop:       # ← переопреде�
 
 # ---------- DATABASE PREPARATION ----------
 @pytest.fixture(scope="session", autouse=True)
-async def prepare_db(event_loop):                    # ⬅ тот же loop
+async def prepare_db(event_loop):  # ⬅ тот же loop
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)

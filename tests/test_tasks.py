@@ -12,9 +12,9 @@ async def test_task_crud_flow(client, auth_header):
     assert task["title"] == "demo"
 
     # --- обновление ---
-    r = await client.put(f"/tasks/{task_id}",
-                         json={"status": "done"},
-                         headers=auth_header)
+    r = await client.put(
+        f"/tasks/{task_id}", json={"status": "done"}, headers=auth_header
+    )
     print(r.status_code, r.json())
     assert r.status_code == 200
     assert r.json()["status"] == "done"
@@ -27,7 +27,6 @@ async def test_task_crud_flow(client, auth_header):
     assert tasks[0]["id"] == task_id
 
     # --- поиск ---
-    r = await client.get("/tasks/search", params={"q": "demo"},
-                         headers=auth_header)
+    r = await client.get("/tasks/search", params={"q": "demo"}, headers=auth_header)
     assert r.status_code == 200
     assert r.json()[0]["id"] == task_id
