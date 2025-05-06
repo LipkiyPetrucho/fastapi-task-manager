@@ -11,6 +11,7 @@ async def lifespan(app: FastAPI):
     await init_db()
     yield
 
+
 app = FastAPI(
     title="TestWork05",
     lifespan=lifespan,

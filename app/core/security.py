@@ -18,9 +18,9 @@ def verify_password(pwd: str, hashed: str) -> bool:
 
 def _create_token(sub: str, exp_delta) -> str:
     to_encode = {
-                "sub": sub,
-                "exp": datetime.now(timezone.utc) + exp_delta,
-        }
+        "sub": sub,
+        "exp": datetime.now(timezone.utc) + exp_delta,
+    }
     return jwt.encode(to_encode, settings.jwt_secret, settings.jwt_algo)
 
 

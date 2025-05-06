@@ -2,7 +2,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Optional
 
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, ConfigDict
 
 
 class Token(BaseModel):
@@ -22,7 +22,7 @@ class UserOut(BaseModel):
     email: EmailStr
 
     class Config:
-        from_attributes = True
+        model_config = ConfigDict(from_attributes=True)
 
 
 class TaskStatus(str, Enum):
@@ -41,8 +41,11 @@ class TaskCreate(TaskBase):
     pass
 
 
-class TaskUpdate(TaskBase):
-    pass
+class TaskUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    status: Optional[TaskStatus] = None
+    priority: Optional[int] = None
 
 
 class TaskOut(TaskBase):
@@ -50,6 +53,4 @@ class TaskOut(TaskBase):
     created_at: datetime
     owner_id: int
 
-    class Config:
-        from_attributes = True
-
+    model_config = ConfigDict(from_attributes=True)

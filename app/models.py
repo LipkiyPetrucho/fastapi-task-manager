@@ -31,10 +31,13 @@ class Task(Base):
     description = Column(Text)
     status = Column(Enum(TaskStatus), default=TaskStatus.pending, index=True)
     priority = Column(Integer, default=0, index=True)
-    created_at = Column(DateTime(timezone=True),
-                        default=lambda: datetime.now(timezone.utc),
-                        index=True,
-                        )
-    owner_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    created_at = Column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        index=True,
+    )
+    owner_id = Column(
+        Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False
+    )
 
     owner = relationship("User", back_populates="tasks")
