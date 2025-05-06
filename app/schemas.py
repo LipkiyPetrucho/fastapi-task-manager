@@ -21,8 +21,7 @@ class UserOut(BaseModel):
     name: str
     email: EmailStr
 
-    class Config:
-        model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 class TaskStatus(str, Enum):

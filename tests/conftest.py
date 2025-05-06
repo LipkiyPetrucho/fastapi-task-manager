@@ -9,17 +9,10 @@ from app.main import app
 from app.core.database import async_session, engine, Base
 
 
-# ---------- GLOBAL EVENT LOOP (pytest‑asyncio) ----------
-@pytest.fixture(scope="session")
-def event_loop() -> asyncio.AbstractEventLoop:  # ← переопределяем дефолт
-    loop = asyncio.new_event_loop()
-    yield loop
-    loop.close()
-
-
 # ---------- DATABASE PREPARATION ----------
 @pytest.fixture(scope="session", autouse=True)
-async def prepare_db(event_loop):  # ⬅ тот же loop
+async def prepare_db():
+    loop = asyncio.get_running_loop()
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
@@ -32,14 +25,16 @@ async def prepare_db(event_loop):  # ⬅ тот же loop
 @pytest.fixture
 async def db_session() -> AsyncSession:
     """Отдаём отдельную async‑сессию на каждый тест."""
+    loop = asyncio.get_running_loop()
     async with async_session() as session:
         yield session
 
 
 # ---------- HTTP CLIENT ----------
 @pytest.fixture
-async def client(event_loop):
+async def client():
     """HTTP‑клиент внутри того же event‑loop (ASGITransport)."""
+    loop = asyncio.get_running_loop()
     async with LifespanManager(app):
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as ac:
@@ -50,6 +45,7 @@ async def client(event_loop):
 @pytest.fixture
 async def auth_header(client):
     """Быстрая регистрация + получение access‑токена."""
+    loop = asyncio.get_running_loop()
     payload = {"name": "Test", "email": "test@example.com", "password": "secret"}
     await client.post("/register", json=payload)
     tokens = (await client.post("/login", json=payload)).json()
